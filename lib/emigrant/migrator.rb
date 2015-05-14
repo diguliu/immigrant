@@ -1,10 +1,13 @@
 require_dependency 'progressbar'
 
 class Emigrant::Migrator
-  def initialize(identifier)
+  def initialize(project, identifier)
+    @project = project
     @identifier = identifier
-    Emigrant::Memory.prepare(@identifier)
+    @memory =  Emigrant::Memory.new(@project, @identifier)
   end
+
+  attr_reader :memory
 
   def run_migration(klass, sample = 0)
     @error_log = Emigrant::Error.new(klass, @identifier)
@@ -15,9 +18,9 @@ class Emigrant::Migrator
     klass.find_each do |source_entity|
       begin
         next if source_entity.class.exceptions.include?(source_entity.id)
-        next if Emigrant::Memory.read(source_entity).present?
+        next if memory.read(source_entity).present?
         target_entity = source_entity.migrate
-        Emigrant::Memory.set(source_entity, target_entity) if target_entity.present? && source_entity.memory_namespace.present?
+        memory.set(source_entity, target_entity) if target_entity.present? && source_entity.memory_namespace.present?
       rescue Exception => exception
         failed += 1
         @error_log.log(source_entity, exception)
@@ -28,7 +31,7 @@ class Emigrant::Migrator
     end
 
     pbar.finish
-    Emigrant::Memory.write
+    memory.write
     if failed > 0
       puts ">> #{failed}/#{total} failed entities migration!"
       puts "   Check more information about it on: #{@error_log.file_path}"
