@@ -7,11 +7,6 @@ module Emigrant
   # Configure through hash
   def self.configure(opts = {})
     opts.each { |k,v| @config[k.to_sym] = v }
-    # Ensure configuration is done before loading models.
-    require_dependency "emigrant/record"
-    require_dependency "emigrant/memory"
-    require_dependency "emigrant/error"
-    require_dependency "emigrant/migrator"
   end
 
   # Configure through yaml file
