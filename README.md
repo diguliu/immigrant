@@ -24,6 +24,18 @@ Or install it yourself as:
 
 ## Usage
 
+### Development dependencies
+
+Emigrant depends on sqlite3 to run its tests. So you must have sqlite3.h
+installed somehow:
+```
+port install sqlite3 +universal
+OR
+yum install sqlite-devel
+OR
+apt-get install libsqlite3-dev
+````
+
 ### Configuration
 
 Before starting any development, you must configure _emigrant_. Here is a
