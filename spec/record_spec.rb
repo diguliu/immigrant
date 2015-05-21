@@ -1,57 +1,57 @@
 load 'schema.rb'
 
-require 'lib/starship'
-require 'lib/localship'
+require 'lib/native'
+require 'lib/foreigner'
 
 RSpec.describe Immigrant::Record do
   it 'includes subclasses on entities list' do
-    expect(Immigrant::Record.entities).to include(Starship)
+    expect(Immigrant::Record.entities).to include(Foreigner)
   end
 
   it 'sets fallback attributes when validation fails' do
-    localship = Localship.new
-    localship.valid?
-    expect(localship.valid?).to eq(false)
+    native = Native.new
+    native.valid?
+    expect(native.valid?).to eq(false)
 
-    starship = Starship.new
-    localship = starship.set_fallback_attributes(localship)
+    foreigner = Foreigner.new
+    native = foreigner.set_fallback_attributes(native)
 
-    expect(localship.name).to eq(starship.fallback_name)
-    expect(localship.phasers).to eq(starship.fallback_phasers)
-    expect(localship.valid?).to eq(true)
+    expect(native.name).to eq(foreigner.fallback_name)
+    expect(native.document).to eq(foreigner.fallback_document)
+    expect(native.valid?).to eq(true)
   end
 
   it 'sets a attribute by fetching the attribute with the same name' do
-    localship = Localship.new
-    starship = Starship.new(:name => 'Enterprise')
-    localship = starship.set_attributes(localship, [:name])
+    native = Native.new
+    foreigner = Foreigner.new(:name => 'Maria')
+    native = foreigner.set_attributes(native, [:name])
 
-    expect(localship.name).to eq(starship.name)
+    expect(native.name).to eq(foreigner.name)
   end
 
   it 'sets a attribute with pretreatment of __' do
-    localship = Localship.new
-    starship = Starship.new(:foton_torpedoes => 2)
-    localship = starship.set_attributes(localship, [:torpedoes])
+    native = Native.new
+    foreigner = Foreigner.new(:years_lived => 15)
+    native = foreigner.set_attributes(native, [:age])
 
-    expect(localship.torpedoes).to eq(starship.__torpedoes)
+    expect(native.age).to eq(foreigner.__age)
   end
 
   it 'provides a new record with the defined attributes' do
-    starship = Starship.new(:name => 'Enterprise', :phasers => 2)
-    localship = starship.new_record(Localship, [:name, :phasers])
+    foreigner = Foreigner.new(:name => 'Jose', :years_lived => 22)
+    native = foreigner.new_record(Native, [:name, :age])
 
-    expect(localship.class).to eq(Localship)
-    expect(localship.name).not_to eq(nil)
-    expect(localship.phasers).not_to eq(nil)
+    expect(native.class).to eq(Native)
+    expect(native.name).not_to eq(nil)
+    expect(native.age).not_to eq(nil)
   end
 
   it 'creates a new record with the defined attributes' do
-    starship = Starship.new(:name => 'Enterprise', :phasers => 2)
-    localship = starship.create_record(Localship, [:name, :phasers])
+    foreigner = Foreigner.new(:name => 'Jose', :years_lived => 22)
+    native = foreigner.create_record(Native, [:name, :age])
 
-    expect(localship.class).to eq(Localship)
-    expect(localship.name).not_to eq(nil)
-    expect(localship.phasers).not_to eq(nil)
+    expect(native.class).to eq(Native)
+    expect(native.name).not_to eq(nil)
+    expect(native.age).not_to eq(nil)
   end
 end
