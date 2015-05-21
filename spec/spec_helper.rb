@@ -94,12 +94,8 @@ require 'emigrant'
 
 Emigrant.configure({
   database: {
-    host:     'localhost',
     adapter:  'sqlite3',
-    encoding: 'unicode',
     database: ':memory:',
-    username: 'emigrant',
-    password: ''
   },
   entities_folder: 'spec/records/'
 })
