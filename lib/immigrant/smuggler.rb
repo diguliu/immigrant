@@ -1,6 +1,8 @@
-require_dependency 'progressbar'
+require 'progressbar'
+require 'immigrant/memory'
+require 'immigrant/error'
 
-class Immigrant::Migrator
+class Immigrant::Smuggler
   def initialize(project, identifier)
     @project = project
     @identifier = identifier
@@ -8,6 +10,11 @@ class Immigrant::Migrator
   end
 
   attr_reader :memory
+
+  def avoid_migration?(foreigner)
+    memory.check(foreigner) ||
+    foreigner.class.exceptions.include?(foreigner.id)
+  end
 
   def run_migration(klass, sample = 0)
     @error_log = Immigrant::Error.new(klass, @identifier)
@@ -17,8 +24,7 @@ class Immigrant::Migrator
 
     klass.find_each do |source_entity|
       begin
-        next if source_entity.class.exceptions.include?(source_entity.id)
-        next if memory.read(source_entity).present?
+        next if avoid_migration?(source_entity)
         target_entity = source_entity.migrate
         memory.set(source_entity, target_entity) if target_entity.present? && source_entity.memory_namespace.present?
       rescue Exception => exception

@@ -1,6 +1,11 @@
 require 'immigrant/record'
 
 class Foreigner < Immigrant::Record
+
+  def self.exceptions
+    [6, 9]
+  end
+
   def memory_namespace
     'foreigner'
   end
