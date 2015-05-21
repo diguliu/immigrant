@@ -46,6 +46,22 @@ class Emigrant::Record < ActiveRecord::Base
     record
   end
 
+  # Sets the attributes by sending the exact attribute name on the emigrant
+  # record. If you want to treat the attribute value or the names doesn't
+  # match, you can define a method with the attribute name prefixed with '__';
+  # e.g.: for the attibute 'login' you would define a method named '__login'.
+  def set_attributes(record, attributes)
+    attributes.each do |attribute|
+      begin
+        value = self.class.method_defined?("__#{attribute}") ? self.send("__#{attribute}") : self.send(attribute)
+        record.send("#{attribute}=", value)
+      rescue
+      end
+    end
+    record = set_fallback_attributes(record) unless record.valid?
+    record
+  end
+
   # Provides a way to create new records with pretreatment and fallback values
   # for attributes. To define the pretreatment just define a method with the
   # attribute name prefixed with "__".
@@ -61,18 +77,6 @@ class Emigrant::Record < ActiveRecord::Base
   # defined fallback attributes, if defined.
   #
   # Usage: my_user = new_record(User, [:login, :email, :environment])
-
-  def set_attributes(record, attributes)
-    attributes.each do |attribute|
-      begin
-        value = self.class.method_defined?("__#{attribute}") ? self.send("__#{attribute}") : self.send(attribute)
-        record.send("#{attribute}=", value)
-      rescue
-      end
-    end
-    record = set_fallback_attributes(record) unless record.valid?
-    record
-  end
 
   def new_record(klass, attributes)
     record = klass.new
