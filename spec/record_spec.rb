@@ -1,6 +1,5 @@
 load 'schema.rb'
 
-require 'emigrant'
 require 'lib/starship'
 require 'lib/localship'
 

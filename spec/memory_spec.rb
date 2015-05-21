@@ -1,4 +1,3 @@
-require 'emigrant'
 require 'emigrant/memory'
 
 RSpec.configure do |config|
