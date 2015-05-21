@@ -1,6 +1,8 @@
+require 'active_record'
+
 class Emigrant::Record < ActiveRecord::Base
   self.abstract_class = true
-  establish_connection Emigrant.config[:database]
+  #establish_connection Emigrant.config[:database]
 
   # You may use some of the following methods to improve the interface's quality.
   #
