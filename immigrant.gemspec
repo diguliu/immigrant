@@ -1,14 +1,14 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'emigrant/version'
+require 'immigrant/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "emigrant"
-  spec.version       = Emigrant::VERSION
+  spec.name          = "immigrant"
+  spec.version       = Immigrant::VERSION
   spec.authors       = ["Rodrigo Souto"]
   spec.email         = ["rodrigo@colivre.coop.br"]
-  spec.summary        = %q{Emigrant is a framework to assist on external database migrations into a Rails app using AR as interface.}
+  spec.summary        = %q{Immigrant is a framework to assist on external database migrations into a Rails app using AR as interface.}
   spec.description = <<-EOF
     This lib works as a fail-safe progress aware white-box framework to assist
     external database migrations into a Rails app. The framework provides

@@ -1,8 +1,8 @@
 require 'active_record'
 
-class Emigrant::Record < ActiveRecord::Base
+class Immigrant::Record < ActiveRecord::Base
   self.abstract_class = true
-  #establish_connection Emigrant.config[:database]
+  #establish_connection Immigrant.config[:database]
 
   # You may use some of the following methods to improve the interface's quality.
   #
@@ -48,7 +48,7 @@ class Emigrant::Record < ActiveRecord::Base
     record
   end
 
-  # Sets the attributes by sending the exact attribute name on the emigrant
+  # Sets the attributes by sending the exact attribute name on the immigrant
   # record. If you want to treat the attribute value or the names doesn't
   # match, you can define a method with the attribute name prefixed with '__';
   # e.g.: for the attibute 'login' you would define a method named '__login'.
@@ -94,4 +94,4 @@ class Emigrant::Record < ActiveRecord::Base
 end
 
 # Ensure entities are loaded and, therefore, stored on the entities variable.
-Dir[File.join(Emigrant.config[:entities_folder], '*.rb')].each {|file| require_dependency file }
+Dir[File.join(Immigrant.config[:entities_folder], '*.rb')].each {|file| require_dependency file }

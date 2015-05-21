@@ -1,22 +1,22 @@
-require 'emigrant/memory'
+require 'immigrant/memory'
 
 RSpec.configure do |config|
   config.before(:each, :memory => :example) do
     @source = double('source', :memory_namespace => 'records', :id => 1)
     @target = double('target', :id => 2)
-    @memory = Emigrant::Memory.new('startrek', 'v1')
+    @memory = Immigrant::Memory.new('startrek', 'v1')
     @memory.set(@source, @target)
   end
 
   config.after(:each, :data => :write) do
-    data_path = Dir.glob(File.join(Emigrant::Memory::DATA_PATH, '*'))
+    data_path = Dir.glob(File.join(Immigrant::Memory::DATA_PATH, '*'))
     FileUtils.rm_rf(data_path)
   end
 end
 
-RSpec.describe Emigrant::Memory do
+RSpec.describe Immigrant::Memory do
   it 'initializes the memory with an empty hash if no file given' do
-    memory = Emigrant::Memory.new('startrek')
+    memory = Immigrant::Memory.new('startrek')
 
     expect(memory.data).to eq({})
   end
@@ -40,7 +40,7 @@ RSpec.describe Emigrant::Memory do
 
   it 'writes data to file', :memory => :example, :data => :write do
     @memory.write
-    reloaded_memory = Emigrant::Memory.new('startrek', 'v1')
+    reloaded_memory = Immigrant::Memory.new('startrek', 'v1')
     expect(reloaded_memory.data).to eq(@memory.data)
   end
 end

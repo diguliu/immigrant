@@ -1,16 +1,16 @@
 require_dependency 'progressbar'
 
-class Emigrant::Migrator
+class Immigrant::Migrator
   def initialize(project, identifier)
     @project = project
     @identifier = identifier
-    @memory =  Emigrant::Memory.new(@project, @identifier)
+    @memory =  Immigrant::Memory.new(@project, @identifier)
   end
 
   attr_reader :memory
 
   def run_migration(klass, sample = 0)
-    @error_log = Emigrant::Error.new(klass, @identifier)
+    @error_log = Immigrant::Error.new(klass, @identifier)
     total = sample > 0 ? sample : klass.count(klass.primary_key)
     pbar = ProgressBar.new("#{klass.name.split('::').last}", total)
     failed = 0
@@ -39,7 +39,7 @@ class Emigrant::Migrator
       puts ">> Migration completed without errors."
     end
 
-    @error_log = Emigrant::Error.new(klass, @identifier+'-pos-migrate')
+    @error_log = Immigrant::Error.new(klass, @identifier+'-pos-migrate')
     pbar = ProgressBar.new("#{klass.name.split('::').last} pos-migrate", total)
     failed = 0
 

@@ -3,9 +3,9 @@ load 'schema.rb'
 require 'lib/starship'
 require 'lib/localship'
 
-RSpec.describe Emigrant::Record do
+RSpec.describe Immigrant::Record do
   it 'includes subclasses on entities list' do
-    expect(Emigrant::Record.entities).to include(Starship)
+    expect(Immigrant::Record.entities).to include(Starship)
   end
 
   it 'sets fallback attributes when validation fails' do

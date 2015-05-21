@@ -1,3 +1,3 @@
-module Emigrant
+module Immigrant
   VERSION = "0.1.0"
 end

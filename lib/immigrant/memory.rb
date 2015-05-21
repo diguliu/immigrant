@@ -1,6 +1,6 @@
 require 'json'
 
-class Emigrant::Memory
+class Immigrant::Memory
   DATA_PATH = 'data'
 
   def initialize(project, identifier=Time.now.to_i)

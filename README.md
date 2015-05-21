@@ -1,4 +1,4 @@
-# Emigrant
+# Immigrant
 
 This lib works as a fail-safe progress aware white-box framework to assist
 external database migrations into a Rails app. The framework provides
@@ -11,7 +11,7 @@ entities into your Rails app entities.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'emigrant'
+gem 'immigrant'
 ```
 
 And then execute:
@@ -20,13 +20,13 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install emigrant
+    $ gem install immigrant
 
 ## Usage
 
 ### Development dependencies
 
-Emigrant depends on sqlite3 to run its tests. So you must have sqlite3.h
+Immigrant depends on sqlite3 to run its tests. So you must have sqlite3.h
 installed somehow:
 ```
 port install sqlite3 +universal
@@ -38,15 +38,15 @@ apt-get install libsqlite3-dev
 
 ### Configuration
 
-Before starting any development, you must configure _emigrant_. Here is a
-sample _emigrant_ configuration:
+Before starting any development, you must configure _immigrant_. Here is a
+sample _immigrant_ configuration:
 
 ```ruby
-# config/initializers/emigrant.rb
+# config/initializers/immigrant.rb
 
-require 'emigrant'
+require 'immigrant'
 
-Emigrant.configure({
+Immigrant.configure({
   database: {
     host:     'earth.federation.org',
     adapter:  'postgresql',
@@ -55,7 +55,7 @@ Emigrant.configure({
     username: 'picard',
     password: 'b4teta2omega9'
   },
-  entities_folder: File.join(Rails.root, 'app', 'models', 'emigrant')
+  entities_folder: File.join(Rails.root, 'app', 'models', 'immigrant')
 })
 ```
 
@@ -69,7 +69,7 @@ TODO
 
 ## Contributing
 
-1. Fork it ( https://gitlab.com/diguliu/emigrant/fork/new )
+1. Fork it ( https://gitlab.com/diguliu/immigrant/fork/new )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

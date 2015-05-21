@@ -1,6 +1,6 @@
 require 'yaml'
 
-module Emigrant
+module Immigrant
   # Configuration defaults
   @config = {}
 
@@ -27,4 +27,4 @@ module Emigrant
   end
 end
 
-require "emigrant/version"
+require "immigrant/version"

@@ -1,6 +1,6 @@
-require 'emigrant/record'
+require 'immigrant/record'
 
-class Starship < Emigrant::Record
+class Starship < Immigrant::Record
   def fallback_name
     'Unknown ship'
   end

@@ -90,9 +90,9 @@ RSpec.configure do |config|
 =end
 end
 
-require 'emigrant'
+require 'immigrant'
 
-Emigrant.configure({
+Immigrant.configure({
   database: {
     adapter:  'sqlite3',
     database: ':memory:',
