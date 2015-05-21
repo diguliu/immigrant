@@ -8,13 +8,14 @@ class Emigrant::Record < ActiveRecord::Base
   # set_inheritance_column :your_entity_type
   # set_primary_key :your_entity_id
 
-  class << self
-    attr_accessor :entities
-  end
-
   @@entities = []
 
+  def self.entities
+    @@entities
+  end
+
   def self.inherited(child)
+    super
     @@entities << child
   end
 
