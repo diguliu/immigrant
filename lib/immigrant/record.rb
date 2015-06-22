@@ -91,6 +91,21 @@ class Immigrant::Record < ActiveRecord::Base
     record.save!
     record
   end
+
+  private
+
+  def convert_url(content)
+    content.gsub(/<(a|img) ([^>]*(src|href))="([^""]+)"/) do
+      tag = $1
+      atts = $2
+      url = $4
+      urls2parse.each do |matcher|
+        parsed_url = self.send("#{matcher}_url", url)
+        url = parsed_url if parsed_url.present?
+      end
+      "<#{tag} #{atts}=\"#{url}\""
+    end
+  end
 end
 
 # Ensure entities are loaded and, therefore, stored on the entities variable.
