@@ -54,7 +54,7 @@ class Immigrant::Smuggler
       klass.find_each do |source_entity|
         begin
           next if source_entity.class.exceptions.include?(source_entity.id)
-          target_entity = source_entity.pos_migrate
+          target_entity = source_entity.pos_migrate(memory)
         rescue Exception => exception
           failed += 1
           @error_log.log(source_entity, exception)

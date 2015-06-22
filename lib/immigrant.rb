@@ -28,3 +28,4 @@ module Immigrant
 end
 
 require "immigrant/version"
+#require 'immigrant/record'
