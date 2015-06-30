@@ -36,8 +36,8 @@ class Immigrant::Memory
   end
 
   def write
-    dirname = File.dirname(file_path)
-    Dir.mkdir(dirname) unless File.directory?(dirname)
+    dirpath = File.dirname(file_path)
+    FileUtils.mkdir_p(dirpath) unless File.exist?(dirpath)
 
     persistent_memory = File.open(file_path,'w')
     persistent_memory.write(data.to_json)

@@ -18,6 +18,7 @@ class Immigrant::Smuggler
 
   def run_migration(klass, sample = 0)
     @error_log = Immigrant::Error.new(klass, @identifier)
+    base_sample = sample
     total = sample > 0 ? sample : klass.count(klass.primary_key)
     pbar = ProgressBar.new("#{klass.name.split('::').last}", total)
     failed = 0
@@ -25,7 +26,7 @@ class Immigrant::Smuggler
     klass.find_each do |source_entity|
       begin
         next if avoid_migration?(source_entity)
-        target_entity = source_entity.migrate
+        target_entity = source_entity.migrate(memory)
         memory.set(source_entity, target_entity) if target_entity.present? && source_entity.memory_namespace.present?
       rescue Exception => exception
         failed += 1
@@ -48,12 +49,14 @@ class Immigrant::Smuggler
     @error_log = Immigrant::Error.new(klass, @identifier+'-pos-migrate')
     pbar = ProgressBar.new("#{klass.name.split('::').last} pos-migrate", total)
     failed = 0
+    sample = base_sample
 
     begin
       klass.new.method(:pos_migrate)
       klass.find_each do |source_entity|
         begin
           next if source_entity.class.exceptions.include?(source_entity.id)
+          next if memory.read(source_entity).blank?
           target_entity = source_entity.pos_migrate(memory)
         rescue Exception => exception
           failed += 1

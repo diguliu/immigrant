@@ -3,7 +3,10 @@ class Immigrant::Error
 
   def initialize(klass, timestamp)
     kind = klass.name.underscore.gsub('/', '-')
-    self.file_path = File.join('/var', 'log', 'immigrant', "errors-#{kind}-#{timestamp}.log")
+    dirpath = File.join('log', 'immigrant')
+
+    FileUtils.mkdir_p(dirpath) unless File.exist?(dirpath)
+    self.file_path = File.join('log', 'immigrant', "errors-#{kind}-#{timestamp}.log")
   end
 
   def log(entity, exception)
