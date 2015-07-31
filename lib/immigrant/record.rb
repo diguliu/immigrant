@@ -95,6 +95,8 @@ class Immigrant::Record < ActiveRecord::Base
   private
 
   def convert_url(content)
+    return unless content.present?
+
     content.gsub(/<(a|img) ([^>]*(src|href))="([^""]+)"/) do
       tag = $1
       atts = $2

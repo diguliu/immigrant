@@ -4,9 +4,14 @@ module Immigrant
   # Configuration defaults
   @config = {}
 
+  def self.require_entities
+    Dir.glob(File.join(config[:entities_folder], '*.rb')).each {|entity| require entity}
+  end
+
   # Configure through hash
   def self.configure(opts = {})
     opts.each { |k,v| @config[k.to_sym] = v }
+    #require_entities
   end
 
   # Configure through yaml file
@@ -28,4 +33,5 @@ module Immigrant
 end
 
 require "immigrant/version"
+require "immigrant/tasks_loader"
 #require 'immigrant/record'

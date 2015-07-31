@@ -3,27 +3,38 @@ require 'immigrant/memory'
 require 'immigrant/error'
 
 class Immigrant::Smuggler
-  def initialize(project, identifier)
+  def initialize(project, identifier, plan)
     @project = project
     @identifier = identifier
+    @plan = plan
     @memory =  Immigrant::Memory.new(@project, @identifier)
   end
 
   attr_reader :memory
+
+  def migrate
+    @plan.each do |action|
+      klass = action[:klass].constantize
+      scope = action[:scope].present? ? eval(action[:scope]) : klass
+      sample = action[:sample] || 0
+      run_migration(klass, scope, sample)
+    end
+  end
 
   def avoid_migration?(foreigner)
     memory.check(foreigner) ||
     foreigner.class.exceptions.include?(foreigner.id)
   end
 
-  def run_migration(klass, sample = 0)
+  def run_migration(klass, scope = nil, sample = 0)
+    scope ||= klass
     @error_log = Immigrant::Error.new(klass, @identifier)
     base_sample = sample
     total = sample > 0 ? sample : klass.count(klass.primary_key)
     pbar = ProgressBar.new("#{klass.name.split('::').last}", total)
     failed = 0
 
-    klass.find_each do |source_entity|
+    scope.find_each do |source_entity|
       begin
         next if avoid_migration?(source_entity)
         target_entity = source_entity.migrate(memory)
@@ -53,7 +64,7 @@ class Immigrant::Smuggler
 
     begin
       klass.new.method(:pos_migrate)
-      klass.find_each do |source_entity|
+      scope.find_each do |source_entity|
         begin
           next if source_entity.class.exceptions.include?(source_entity.id)
           next if memory.read(source_entity).blank?
