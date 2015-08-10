@@ -101,9 +101,20 @@ class Immigrant::Record < ActiveRecord::Base
       tag = $1
       atts = $2
       url = $4
+      parsed = false
       urls2parse.each do |matcher|
         parsed_url = self.send("#{matcher}_url", url)
-        url = parsed_url if parsed_url.present?
+        if parsed_url.present?
+          url = parsed_url
+          parsed = true
+        end
+      end
+
+      if !parsed
+        begin
+          url = self.send('default_url', url)
+        rescue NoMethodError
+        end
       end
       "<#{tag} #{atts}=\"#{url}\""
     end
