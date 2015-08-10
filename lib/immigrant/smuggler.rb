@@ -17,7 +17,10 @@ class Immigrant::Smuggler
       klass = action[:klass].constantize
       scope = action[:scope].present? ? eval(action[:scope]) : klass
       sample = action[:sample] || 0
-      run_migration(klass, scope, sample)
+      options ||= {}
+      options[:kind] ||= :linear
+      options[:sample] ||= 0
+      run_migration(klass, scope, options)
     end
   end
 
@@ -26,14 +29,9 @@ class Immigrant::Smuggler
     foreigner.class.exceptions.include?(foreigner.id)
   end
 
-  def run_migration(klass, scope = nil, sample = 0)
-    scope ||= klass
-    @error_log = Immigrant::Error.new(klass, @identifier)
-    base_sample = sample
-    total = sample > 0 ? sample : klass.count(klass.primary_key)
-    pbar = ProgressBar.new("#{klass.name.split('::').last}", total)
+  def linear_migration(scope, pbar, options)
+    sample = options[:sample]
     failed = 0
-
     scope.find_each do |source_entity|
       begin
         next if avoid_migration?(source_entity)
@@ -47,6 +45,41 @@ class Immigrant::Smuggler
       sample -= 1
       break if sample == 0
     end
+
+    return failed
+  end
+
+  def tree_migrate(list, children_method, failed)
+    list.find_each do |source_entity|
+      begin
+        next if avoid_migration?(source_entity)
+        target_entity = source_entity.migrate(memory)
+        memory.set(source_entity, target_entity) if target_entity.present? && source_entity.memory_namespace.present?
+        pbar.inc
+        failed = tree_migrate(source_entity.send(children_method), children_method, failed)
+      rescue Exception => exception
+        failed += 1
+        @error_log.log(source_entity, exception)
+        pbar.inc
+      end
+    end
+    return failed
+  end
+
+  def tree_migration(scope, pbar, options)
+    failed = 0
+    failed = tree_migrate(scope.where(options[:root_conditions]), options[:children_method], failed)
+    return failed
+  end
+
+  def run_migration(klass, scope = nil, options = {})
+    sample = options[:sample]
+    @error_log = Immigrant::Error.new(klass, @identifier)
+    base_sample = sample
+    total = sample > 0 ? sample : scope.count(klass.primary_key)
+    pbar = ProgressBar.new("#{klass.name.split('::').last}", total)
+
+    failed = self.send("#{options[:kind]}_migration", scope, pbar, options)
 
     pbar.finish
     memory.write
