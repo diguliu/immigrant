@@ -25,6 +25,14 @@ class Immigrant::Record < ActiveRecord::Base
     []
   end
 
+  # This is ran before any migration of this record
+  def self.setup(memory)
+  end
+
+  # This is ran after every migration of this record
+  def self.closure(memory)
+  end
+
   def memory_namespace
   end
 

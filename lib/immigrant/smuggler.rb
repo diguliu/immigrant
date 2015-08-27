@@ -77,7 +77,11 @@ class Immigrant::Smuggler
     @error_log = Immigrant::Error.new(klass, @identifier)
     base_sample = sample
     total = sample > 0 ? sample : scope.count(klass.primary_key)
-    pbar = ProgressBar.new("#{klass.name.split('::').last}", total)
+    name = klass.name.split('::').last
+    pbar = ProgressBar.new("#{name}", total)
+
+    puts "> Running #{name} setup..."
+    klass.setup(memory)
 
     failed = self.send("#{options[:kind]}_migration", scope, pbar, options)
 
@@ -120,5 +124,8 @@ class Immigrant::Smuggler
     else
       puts ">> Migration completed without errors."
     end
+
+    puts "> Running #{name} closure..."
+    klass.closure(memory)
   end
 end
